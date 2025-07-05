@@ -1,6 +1,5 @@
 import streamlit as st
 import base64
-
 import os
 
 def get_base64_image(image_path):

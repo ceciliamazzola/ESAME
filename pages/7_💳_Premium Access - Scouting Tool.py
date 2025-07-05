@@ -1,10 +1,12 @@
 import streamlit as st
 import pandas as pd
-import os
+from pathlib import Path
+from PIL import Image
 
+# ⚙️ Configurazione pagina
 st.set_page_config(page_title="Drafted Players - Player List", layout='wide')
 
-# Styling CSS from example
+# 🌐 Styling
 st.markdown("""
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
     <style>
@@ -58,32 +60,36 @@ st.markdown("""
             font-weight: bold;
             color: #000 !important;
         }
-        .stMarkdown, .css-1cpxqw2, .css-q8sbsg {
-            color: #000 !important;
-        }
-
-        /* 🟡 Etichette dei selectbox */
         label, .stSelectbox label, .stSelectbox div[data-baseweb="select"] {
             color: #000 !important;
             font-weight: bold;
         }
-
-        /* 🟡 Testo messaggi informativi (come info/warning) */
-        .stAlert {
-            color: #000 !important;
-        }
-        .stAlert > div {
-            color: #000 !important;
-        }
     </style>
 """, unsafe_allow_html=True)
-
-
 
 st.markdown("<div class='title-custom'>Drafted Players</div>", unsafe_allow_html=True)
 st.markdown("<div class='subtitle-effect'>Browse players selected in the NBA Draft</div>", unsafe_allow_html=True)
 
-# Function to locate player images
+# 📁 Percorsi relativi
+current_dir = Path(__file__).parent
+root_dir = current_dir.parent
+df_path = root_dir / "college_players_final.csv"
+empty_image_path = root_dir / "empty.png"
+images_folder = root_dir / "images"  # opzionale, se usi immagini giocatori
+
+# 📊 Carica CSV
+try:
+    df = pd.read_csv(df_path)
+except Exception as e:
+    st.error(f"Errore nel caricamento del CSV: {e}")
+    st.stop()
+
+# 🖼 Immagine di fallback
+empty_img = None
+if empty_image_path.exists():
+    empty_img = Image.open(empty_image_path)
+
+# 🔍 Funzione per immagine giocatore
 def get_player_image_path(player_name):
     try:
         last, first = player_name.split(", ")
@@ -91,21 +97,12 @@ def get_player_image_path(player_name):
     except:
         base = player_name.replace(" ", "_")
     for ext in ["png", "jpg", "jpeg"]:
-        img_path = f"images/{base}.{ext}"
-        if os.path.exists(img_path):
+        img_path = images_folder / f"{base}.{ext}"
+        if img_path.exists():
             return img_path
     return None
 
-# Path to default empty image (replace with actual path as needed)
-EMPTY_IMAGE_PATH = "/workspaces/ESAME/empty.png"
 
-# Load CSV
-df_path = "/workspaces/ESAME/college_players_final.csv"
-try:
-    df = pd.read_csv(df_path)
-except Exception as e:
-    st.error(f"Error loading CSV: {e}")
-    st.stop()
 
 # Verify required columns
 required = ['player_name', 'team', 'conf', 'weighted_scouting_score', 'pick', 'draft_year']
