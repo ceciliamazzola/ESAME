@@ -97,10 +97,10 @@ def get_player_image_path(player_name):
     return None
 
 # Path to default empty image (replace with actual path as needed)
-EMPTY_IMAGE_PATH = "/workspaces/BozzaEsame/empty.png"
+EMPTY_IMAGE_PATH = "/workspaces/ESAME/empty.png"
 
 # Load CSV
-df_path = "/workspaces/BozzaEsame/college_players_final.csv"
+df_path = "/workspaces/ESAME/college_players_final.csv"
 try:
     df = pd.read_csv(df_path)
 except Exception as e:
