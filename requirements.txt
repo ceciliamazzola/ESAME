@@ -1,1 +1,12 @@
 streamlit
+streamlit_option_menu
+numpy
+pandas
+matplotlib
+plotly>=5.0.0
+scikit-learn
+streamlit-aggrid
+Pillow
+requests
+seaborn
+scipy
