@@ -29,8 +29,8 @@ st.markdown("""
 # ----------------------
 # Data Loading
 # ----------------------
-@st.cache_data
 
+@st.cache_data
 def load_data(path: str):
     df = pd.read_csv(path)
     df = df[df['season'] >= 2000].copy()
@@ -60,16 +60,34 @@ def load_data(path: str):
     pg_df = (
         df.drop_duplicates('player_x')
           .loc[:, ['player_x','career_pts_per_g','career_trb_per_g',
-                   'career_ast_per_g','career_tov_per_g','career_orb','career_drb']]
+                   'career_ast_per_g','career_tov_per_g','career_orb','career_drb',
+                   'career_g','career_fga','career_fg','career_fta','career_ft',
+                   'career_stl','career_blk']]
           .rename(columns={
               'career_pts_per_g':'PTS/G',
               'career_trb_per_g':'TRB/G',
               'career_ast_per_g':'AST/G',
               'career_tov_per_g':'TOV/G',
               'career_orb':'ORB',
-              'career_drb':'DRB'
+              'career_drb':'DRB',
+              'career_g': 'Games'
           })
     )
+
+    # Calcolo EFF e OER
+    pg_df['EFF'] = (
+        pg_df['PTS/G'] * pg_df['Games'] + pg_df['TRB/G'] * pg_df['Games'] + pg_df['AST/G'] * pg_df['Games']
+        + pg_df['career_stl'] + pg_df['career_blk']
+        - (pg_df['career_fga'] - pg_df['career_fg'])
+        - (pg_df['career_fta'] - pg_df['career_ft'])
+        - pg_df['TOV/G'] * pg_df['Games']
+    ) / pg_df['Games']
+
+    denom = pg_df['career_fga'] + 0.44 * pg_df['career_fta'] + pg_df['TOV/G'] * pg_df['Games'] - pg_df['ORB']
+    pg_df['OER'] = pg_df['PTS/G'] * pg_df['Games'] / denom * 100
+
+    # Drop extra columns
+    pg_df = pg_df.drop(columns=['career_fga','career_fg','career_fta','career_ft','career_stl','career_blk'])
 
     career_df = fg_df.merge(pct_df, on='player_x').merge(pg_df, on='player_x')
     career_df = career_df.merge(games_df, on='player_x')
@@ -77,9 +95,10 @@ def load_data(path: str):
     career_df['DRB/G'] = career_df['DRB'] / career_df['TotalGames']
 
     career_df = career_df.rename(columns={'player_x':'player'})
-    career_df = career_df.drop(columns=['FGSum','Games','TotalGames','ORB','DRB'])
+    career_df = career_df.drop(columns=[col for col in ['FGSum','Games','TotalGames','ORB','DRB'] if col in career_df.columns])
 
     return career_df
+
 
 career_df = load_data('Player Final.csv')
 
@@ -328,6 +347,10 @@ season_stats = {
     "3P%": round(season_row["x3p_percent"] * 100, 1),
     "FT%": round(season_row["ft_percent"] * 100, 1),
 }
+# Aggiunta Career EFF e OER
+player_row = career_df[career_df['player'] == selected_player].iloc[0]
+season_stats['Career EFF'] = round(player_row['EFF'], 1)
+season_stats['Career OER'] = round(player_row['OER'], 1)
 
 # CSS custom
 st.markdown("""
@@ -417,6 +440,9 @@ for label, value in season_stats.items():
 cards_html += '</div>'
 
 st.markdown(cards_html, unsafe_allow_html=True)
+
+
+
 
 import streamlit as st
 import pandas as pd

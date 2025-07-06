@@ -66,6 +66,24 @@ st.markdown("""
             color: #000 !important;
             font-weight: bold;
         }
+
+        /* 🚀 More Aggressive CSS for the button */
+        /* Targets the button's internal element for higher specificity */
+        button[data-testid="baseButton-secondary"] {
+            background-color: #f45208 !important; /* Orange background */
+            color: white !important; /* White text */
+            font-weight: bold !important;
+            font-family: 'Orbitron', sans-serif !important;
+            border-radius: 6px !important;
+            padding: 0.5rem 1.5rem !important;
+            border: none !important;
+            transition: background-color 0.3s ease;
+        }
+
+        button[data-testid="baseButton-secondary"]:hover {
+            background-color: #ff6d2e !important; /* Lighter orange on hover */
+            color: white !important; /* Keep text white on hover */
+        }
     </style>
 """, unsafe_allow_html=True)
 
@@ -74,7 +92,6 @@ if "is_logged_in" not in st.session_state:
     st.session_state.is_logged_in = False
 
 # 🔐 Blocco login
-# 🔐 Blocco login con pulsante "Enter" e messaggio accanto
 if not st.session_state.is_logged_in:
     st.markdown("## Login Required")
 
@@ -84,13 +101,13 @@ if not st.session_state.is_logged_in:
 
         col1, col2 = st.columns([1, 2])
         with col1:
-            login_btn = st.form_submit_button("🔓 Enter")
+            login_btn = st.form_submit_button("🔓 Enter") # This is the button we are styling
         with col2:
             st.markdown("""
-    <div style='font-size:14px; color: gray; padding-top: 6px;'>
-        🛈 <strong>Click Enter twice</strong> if it doesn't work the first time.
-    </div>
-""", unsafe_allow_html=True)
+                <div style='font-size:14px; color: gray; padding-top: 6px;'>
+                     <strong>Click Enter twice</strong> if it doesn't work the first time.
+                </div>
+            """, unsafe_allow_html=True)
 
         if login_btn:
             if os.path.exists("utenti.json"):
@@ -100,18 +117,27 @@ if not st.session_state.is_logged_in:
 
                     if login_email == user_data["email"] and login_password == user_data["password"]:
                         st.session_state.is_logged_in = True
-                        st.success(f"✅ Logged in! You can now use the page.")
-                        st.stop()
+                        st.experimental_rerun()
                     else:
-                        st.error("❌ Invalid credentials.")
+                        st.markdown("""
+                            <div style='
+                                background-color: #f0f0f0;
+                                color: black;
+                                padding: 12px;
+                                border-radius: 6px;
+                                font-weight: bold;
+                                font-size: 15px;
+                                margin-top: 10px;
+                            '>
+                                ❌ Invalid credentials.
+                            </div>
+                        """, unsafe_allow_html=True)
                 except Exception as e:
                     st.error("❌ Unable to read user data.")
             else:
                 st.error("⚠️ No registered user found. Please go to the Premium Access page first.")
 
     st.stop()
-
-
 
 
 
