@@ -494,7 +494,7 @@ st.markdown("""
 # UI: Filters
 # ---------------------------
 
-st.title("NBA Shot Map and Hexmap")
+st.title("Shot Map & Hexmap")
 
 # --- Importa il font Orbitron da Google Fonts ---
 st.markdown("""
@@ -504,7 +504,8 @@ st.markdown("""
     font-family: 'Orbitron', sans-serif;
     color: black;
     text-align: center;
-    font-size: 20px;
+    font-size: 28px;
+    font-weight: 700;        
     margin-top: 1em;
     margin-bottom: 0.5em;
 }
