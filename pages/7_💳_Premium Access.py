@@ -1,4 +1,5 @@
 import streamlit as st
+import json
 
 # CONFIGURAZIONE DELLA PAGINA
 st.set_page_config(page_title="Premium Access", page_icon="💳")
@@ -51,8 +52,6 @@ st.markdown("""
             margin-bottom: 30px;
             text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;
         }
-
-        /* Bottone personalizzato su st.button */
         button[kind="secondary"] {
             background-color: #f45208 !important;
             color: white !important;
@@ -64,12 +63,13 @@ st.markdown("""
         button[kind="secondary"]:hover {
             background-color: #ff7633 !important;
         }
+        /* Label nera per Email e Password */
+        label, .stTextInput > label, .stTextInput label {
+            color: black !important;
+            font-weight: bold !important;
+        }
     </style>
 """, unsafe_allow_html=True)
-
-# Inizializza il piano selezionato
-if "selected_plan" not in st.session_state:
-    st.session_state.selected_plan = None
 
 # TITOLO
 st.markdown("<div class='title-font'>Unlock Premium Analytics</div>", unsafe_allow_html=True)
@@ -80,8 +80,7 @@ st.markdown("""
     Get exclusive access to advanced metrics, draft insights, and real-time analytics to have a competitive edge
 </div>
 """, unsafe_allow_html=True)
-st.markdown("<br>", unsafe_allow_html=True)  # Una riga vuota
-
+st.markdown("<br>", unsafe_allow_html=True)
 
 # Bottone indietro
 st.markdown("""
@@ -100,7 +99,7 @@ st.markdown("""
         </button>
     </form>
 """, unsafe_allow_html=True)
-st.markdown("<br>", unsafe_allow_html=True)  # Una riga vuota
+st.markdown("<br>", unsafe_allow_html=True)
 
 # LISTA DEI PIANI
 plans = [
@@ -125,6 +124,10 @@ plans = [
     }
 ]
 
+# Inizializza selected_plan
+if "selected_plan" not in st.session_state:
+    st.session_state.selected_plan = None
+
 # RENDERING PIANI
 cols = st.columns(3)
 for idx, plan in enumerate(plans):
@@ -143,20 +146,27 @@ for idx, plan in enumerate(plans):
         if st.button(f"Choose {plan['name']}", key=f"btn_{idx}"):
             st.session_state.selected_plan = plan["name"]
 
-# SEZIONE PAGAMENTO
+# FORM AUTENTICAZIONE
 if st.session_state.selected_plan:
     st.markdown("---")
     st.subheader("Start Your Trial")
     st.markdown(f"**Selected Plan:** `{st.session_state.selected_plan}`")
 
-    with st.form("payment_form"):
-        email = st.text_input("Email Address")
-        payment_method = st.radio("Payment Method", ["Credit Card"])
-        if payment_method == "Credit Card":
-            cc_number = st.text_input("Card Number")
-            cc_expiry = st.text_input("MM/YY")
-            cc_cvc = st.text_input("CVC")
-        st.markdown(f"**{st.session_state.selected_plan} Plan (Monthly)**\n\n7-day free trial\n\nThen pricing as listed above.")
-        submitted = st.form_submit_button("Start Free Trial")
-        if submitted:
-            st.success(f"✅ Subscription to {st.session_state.selected_plan} plan started for {email}!")
+    with st.form("auth_form"):
+        email = st.text_input("Email", key="auth_email")
+        password = st.text_input("Password", type="password", key="auth_password")
+        save_user = st.form_submit_button("Save Subscription")
+        if save_user:
+            if email and password:
+                user_data = {
+                    "email": email,
+                    "password": password,
+                    "plan": st.session_state.selected_plan
+                }
+                with open("utenti.json", "w") as f:
+                    json.dump(user_data, f)
+                st.success("✅ Subscription saved successfully!")
+            else:
+                st.error("Please enter both email and password.")
+
+    st.markdown("🔁 Now go to the **Drafted Players** page to access your premium content.")

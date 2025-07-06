@@ -155,23 +155,44 @@ if not img_file:
 # ----------------------
 # Player Image (Perfectly Centered)
 # ----------------------
+import base64
+from pathlib import Path
+
+import base64
+from pathlib import Path
+
+# Percorso immagine di fallback
+empty_image_path = Path("/workspaces/ESAME/empty.png")
+
+# Determina l'immagine da usare
+img_path = Path(img_file) if img_file and Path(img_file).exists() else empty_image_path
+
+# Mostra immagine e messaggio
 center_container = st.container()
 
 with center_container:
-    if img_file:
+    if img_path.exists():
+        image_bytes = open(img_path, "rb").read()
+        image_b64 = base64.b64encode(image_bytes).decode()
         st.markdown(f"""
             <div style='text-align: center;'>
-                <img src='data:image/png;base64,{base64.b64encode(open(img_file, "rb").read()).decode()}' 
+                <img src='data:image/png;base64,{image_b64}' 
                      width='250' style='margin-bottom: 8px;'/>
                 <div style='font-size: 18px; color: black; font-weight: bold;'>{selected_player}</div>
             </div>
         """, unsafe_allow_html=True)
+
+        # Se stai usando l'immagine di fallback, mostra anche il messaggio
+        if img_path == empty_image_path:
+            st.markdown("""
+                <div style='text-align: center; color: gray; font-size: 14px; margin-top: 4px;'>
+                 Photo not available for the selected player.
+                </div>
+            """, unsafe_allow_html=True)
     else:
-        st.markdown("""
-            <div style='text-align: center; color: black; font-size: 16px; margin-top: 10px;'>
-                Photo not available for the selected player.
-            </div>
-        """, unsafe_allow_html=True)
+        st.error("❌ No image found, and fallback image 'empty.png' is missing.")
+
+
 
 # ----------------------
 # Radar Charts

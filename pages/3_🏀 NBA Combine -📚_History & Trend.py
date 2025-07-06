@@ -132,9 +132,13 @@ top_n = st.selectbox("", [5, 10, 15], label_visibility="collapsed")
 top_affiliations = df['Affiliation'].value_counts().head(top_n).reset_index()
 top_affiliations.columns = ['Affiliation', 'Players']
 
+# Sort the DataFrame in descending order by 'Players'
+top_affiliations = top_affiliations.sort_values(by='Players', ascending=False)
+
+
 st.markdown(f"""
     <h3 style='font-family: Orbitron, sans-serif; color:#000000; margin-bottom: 0.5em;'>
-        Top {top_n} Player Affiliations Before Draft
+        Top {top_n} Player Affiliations Before Draft (2000-2024)
     </h3>
 """, unsafe_allow_html=True)
 
@@ -145,7 +149,9 @@ fig = px.bar(
     orientation='h',
     text='Players',
     color='Players',
-    color_continuous_scale='Blues'
+    color_continuous_scale='Blues',
+    # Set the category order for the y-axis based on the sorted DataFrame
+    category_orders={"Affiliation": top_affiliations['Affiliation'].tolist()}
 )
 
 fig.update_traces(
@@ -180,10 +186,13 @@ fig.update_layout(
 
 st.plotly_chart(fig, use_container_width=True)
 
+
+
+
 # 🌍 Mappa immagine
 st.markdown("""
     <h3 style='font-family: Orbitron, sans-serif; color:#000000; margin-top: 2em;'>
-        Player origin before draft
+        Player origin before draft (2000-2024)
     </h3>
 """, unsafe_allow_html=True)
 

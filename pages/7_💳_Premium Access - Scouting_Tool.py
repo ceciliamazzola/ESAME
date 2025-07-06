@@ -2,6 +2,8 @@ import streamlit as st
 import pandas as pd
 from pathlib import Path
 from PIL import Image
+import json
+import os
 
 # ⚙️ Configurazione pagina
 st.set_page_config(page_title="Drafted Players - Player List", layout='wide')
@@ -67,6 +69,42 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
+# 🧠 Stato iniziale di login
+if "is_logged_in" not in st.session_state:
+    st.session_state.is_logged_in = False
+
+# 🔐 Blocco login
+if not st.session_state.is_logged_in:
+    st.markdown("## Login Required")
+
+    login_email = st.text_input("Email")
+    login_password = st.text_input("Password", type="password")
+
+    if os.path.exists("utenti.json"):
+        try:
+            with open("utenti.json") as f:
+                user_data = json.load(f)
+
+            if login_email and login_password:
+                if login_email == user_data["email"] and login_password == user_data["password"]:
+                    st.session_state.is_logged_in = True
+                    st.success(f"✅ Successfully logged in as `{login_email}`")
+                    st.experimental_rerun()
+                elif login_email and login_password:
+                    st.error("❌ Invalid credentials.")
+        except Exception as e:
+            st.error("❌ Unable to read user data.")
+    else:
+        st.error("⚠️ No registered user found. Please go to the Premium Access page first.")
+    st.stop()
+
+# 🔓 Logout button
+if st.button("🔓 Logout"):
+    st.session_state.is_logged_in = False
+    st.experimental_rerun()
+
+# --- CONTENUTO PRINCIPALE DELLA PAGINA (solo dopo login) ---
+
 st.markdown("<div class='title-custom'>Drafted Players</div>", unsafe_allow_html=True)
 st.markdown("<div class='subtitle-effect'>Browse players selected in the NBA Draft</div>", unsafe_allow_html=True)
 
@@ -75,7 +113,7 @@ current_dir = Path(__file__).parent
 root_dir = current_dir.parent
 df_path = root_dir / "college_players_final.csv"
 empty_image_path = root_dir / "empty.png"
-images_folder = root_dir / "images"  # opzionale, se usi immagini giocatori
+images_folder = root_dir / "images"
 
 # 📊 Carica CSV
 try:
@@ -84,12 +122,10 @@ except Exception as e:
     st.error(f"Errore nel caricamento del CSV: {e}")
     st.stop()
 
-# 🖼 Immagine di fallback
-empty_img = None
-if empty_image_path.exists():
-    empty_img = Image.open(empty_image_path)
+# 🖼 Immagine fallback
+empty_img = Image.open(empty_image_path) if empty_image_path.exists() else None
 
-# 🔍 Funzione per immagine giocatore
+# 🔍 Trova immagine del giocatore
 def get_player_image_path(player_name):
     try:
         last, first = player_name.split(", ")
@@ -102,20 +138,18 @@ def get_player_image_path(player_name):
             return img_path
     return None
 
-
-
-# Verify required columns
-required = ['player_name', 'team', 'conf', 'weighted_scouting_score', 'pick', 'draft_year']
+# ✅ Controllo colonne
+required = ['player_name', 'team', 'conf', 'weighted_scouting_score', 'pick', 'draft_year', 'year']
 missing = [col for col in required if col not in df.columns]
 if missing:
     st.error(f"Missing required columns: {', '.join(missing)}")
     st.stop()
 
-# Year selection (season year)
+# 📅 Selezione anno
 available_years = sorted(df['year'].dropna().unique())
 selected_year = st.selectbox("Select season year to analyze", available_years, index=len(available_years)-1)
 
-# Filter drafted players and ordering option
+# 🧹 Filtro + ordinamento
 df_year = df[(df['year'] == selected_year) & (df['pick'].notna())]
 order_option = st.selectbox("Sort players by", ['Pick number', 'Weighted score'])
 if order_option == 'Pick number':
@@ -127,9 +161,8 @@ if df_year.empty:
     st.info("No drafted players found for the selected year.")
 else:
     for _, row in df_year.iterrows():
-        # Determine image path or fallback to empty image
         img_candidate = get_player_image_path(row['player_name'])
-        img = img_candidate if img_candidate and os.path.exists(img_candidate) else EMPTY_IMAGE_PATH
+        img = img_candidate if img_candidate and os.path.exists(img_candidate) else empty_image_path
 
         draft_year = int(row['draft_year']) if not pd.isna(row['draft_year']) else 'N/A'
         with st.container():
