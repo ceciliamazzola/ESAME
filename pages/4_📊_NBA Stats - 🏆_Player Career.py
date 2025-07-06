@@ -349,7 +349,7 @@ season_stats = {
 }
 # Aggiunta Career EFF e OER
 player_row = career_df[career_df['player'] == selected_player].iloc[0]
-season_stats['Career EFF'] = round(player_row['EFF'], 1)
+season_stats['Career EFF per G'] = round(player_row['EFF'], 1)
 season_stats['Career OER'] = round(player_row['OER'], 1)
 
 # CSS custom
