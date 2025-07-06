@@ -74,34 +74,46 @@ if "is_logged_in" not in st.session_state:
     st.session_state.is_logged_in = False
 
 # 🔐 Blocco login
+# 🔐 Blocco login con pulsante "Enter" e messaggio accanto
 if not st.session_state.is_logged_in:
     st.markdown("## Login Required")
 
-    login_email = st.text_input("Email")
-    login_password = st.text_input("Password", type="password")
+    with st.form("login_form"):
+        login_email = st.text_input("Email")
+        login_password = st.text_input("Password", type="password")
 
-    if os.path.exists("utenti.json"):
-        try:
-            with open("utenti.json") as f:
-                user_data = json.load(f)
+        col1, col2 = st.columns([1, 2])
+        with col1:
+            login_btn = st.form_submit_button("🔓 Enter")
+        with col2:
+            st.markdown("""
+    <div style='font-size:14px; color: gray; padding-top: 6px;'>
+        🛈 <strong>Click Enter twice</strong> if it doesn't work the first time.
+    </div>
+""", unsafe_allow_html=True)
 
-            if login_email and login_password:
-                if login_email == user_data["email"] and login_password == user_data["password"]:
-                    st.session_state.is_logged_in = True
-                    st.success(f"✅ Successfully logged in as `{login_email}`")
-                    st.experimental_rerun()
-                elif login_email and login_password:
-                    st.error("❌ Invalid credentials.")
-        except Exception as e:
-            st.error("❌ Unable to read user data.")
-    else:
-        st.error("⚠️ No registered user found. Please go to the Premium Access page first.")
+        if login_btn:
+            if os.path.exists("utenti.json"):
+                try:
+                    with open("utenti.json") as f:
+                        user_data = json.load(f)
+
+                    if login_email == user_data["email"] and login_password == user_data["password"]:
+                        st.session_state.is_logged_in = True
+                        st.success(f"✅ Logged in! You can now use the page.")
+                        st.stop()
+                    else:
+                        st.error("❌ Invalid credentials.")
+                except Exception as e:
+                    st.error("❌ Unable to read user data.")
+            else:
+                st.error("⚠️ No registered user found. Please go to the Premium Access page first.")
+
     st.stop()
 
-# 🔓 Logout button
-if st.button("🔓 Logout"):
-    st.session_state.is_logged_in = False
-    st.experimental_rerun()
+
+
+
 
 # --- CONTENUTO PRINCIPALE DELLA PAGINA (solo dopo login) ---
 
@@ -158,7 +170,18 @@ else:
     df_year = df_year.sort_values('weighted_scouting_score', ascending=False)
 
 if df_year.empty:
-    st.info("No drafted players found for the selected year.")
+    st.markdown("""
+        <div style='
+            background-color: #e0e0e0;
+            padding: 12px;
+            border-radius: 8px;
+            color: black;
+            font-weight: bold;
+            font-size: 16px;
+        '>
+            No drafted players found for the selected year.
+        </div>
+    """, unsafe_allow_html=True)
 else:
     for _, row in df_year.iterrows():
         img_candidate = get_player_image_path(row['player_name'])
