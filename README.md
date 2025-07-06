@@ -10,5 +10,5 @@
 2. Run the app
 
    ```
-   $ streamlit run streamlit_app.py
+   $ streamlit run 1_🏠_Homepage.py
    ```
