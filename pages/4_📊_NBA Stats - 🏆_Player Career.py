@@ -148,12 +148,16 @@ selected_player = st.selectbox("", options=players, index=players.index("LeBron 
 # Player Image
 # ----------------------
 # ----------------------
-# Player Image (Centered)
 # ----------------------
+# Player Image (Centered with Fallback)
+# ----------------------
+from pathlib import Path
+
+# Percorso immagine nella cartella corrente
 img_file = None
 for ext in ['png', 'jpg', 'jpeg']:
-    candidate = f"{selected_player}.{ext}"
-    if os.path.isfile(candidate):
+    candidate = Path(f"{selected_player}.{ext}")
+    if candidate.is_file():
         img_file = candidate
         break
 
@@ -165,51 +169,26 @@ if not img_file:
         base_name = selected_player.replace(" ", "_")
 
     for ext in ['png', 'jpg', 'jpeg']:
-        candidate = f"images/{base_name}.{ext}"
-        if os.path.isfile(candidate):
+        candidate = Path(f"images/{base_name}.{ext}")
+        if candidate.is_file():
             img_file = candidate
             break
 
-# Mostra immagine centrata o testo centrato
-# ----------------------
-# Player Image (Perfectly Centered)
-# ----------------------
-import base64
-from pathlib import Path
+# Se ancora non trovato, fallback a empty.png nella stessa cartella
+final_image = img_file if img_file and img_file.exists() else Path("empty.png")
+is_fallback = final_image.name == "empty.png"
 
-import base64
-from pathlib import Path
+# Mostra immagine centrata
+center_col = st.columns([2, 1, 2])[1]
+with center_col:
+    st.image(str(final_image), width=200)
 
-# Percorso immagine di fallback
-empty_image_path = Path("/workspaces/ESAME/empty.png")
-
-# Determina l'immagine da usare
-img_path = Path(img_file) if img_file and Path(img_file).exists() else empty_image_path
-
-# Mostra immagine e messaggio
-center_container = st.container()
-
-with center_container:
-    if img_path.exists():
-        image_bytes = open(img_path, "rb").read()
-        image_b64 = base64.b64encode(image_bytes).decode()
-        st.markdown(f"""
-            <div style='text-align: center;'>
-                <img src='data:image/png;base64,{image_b64}' 
-                     width='250' style='margin-bottom: 8px;'/>
-                <div style='font-size: 18px; color: black; font-weight: bold;'>{selected_player}</div>
-            </div>
-        """, unsafe_allow_html=True)
-
-        # Se stai usando l'immagine di fallback, mostra anche il messaggio
-        if img_path == empty_image_path:
-            st.markdown("""
-                <div style='text-align: center; color: gray; font-size: 14px; margin-top: 4px;'>
-                 Photo not available for the selected player.
-                </div>
-            """, unsafe_allow_html=True)
-    else:
-        st.error("❌ No image found, and fallback image 'empty.png' is missing.")
+    # Mostra messaggio se immagine di fallback
+    if is_fallback:
+        st.markdown(
+            "<div style='color: #666; font-size: 0.9rem; margin-top: 0.5rem; text-align:center;'>No available picture for this player.</div>",
+            unsafe_allow_html=True
+        )
 
 
 

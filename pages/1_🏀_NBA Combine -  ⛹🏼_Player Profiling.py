@@ -131,11 +131,13 @@ def get_player_image_path(player_name):
         base_name = f"{first}_{last}".replace(" ", "_")
     except:
         base_name = player_name.replace(" ", "_")
+
     for ext in ["png", "jpg", "jpeg"]:
         image_path = f"images/{base_name}.{ext}"
         if os.path.exists(image_path):
-            return image_path
-    return None
+            return image_path, False  # False = non è immagine fallback
+
+    return "images/empty.png", True  # True = è immagine fallback
 
 
 df = pd.read_csv("Draft_Combine_00_25.csv")
@@ -151,16 +153,17 @@ if df is not None:
         player_data = df_year[df_year['PLAYER'] == selected_player].iloc[0]
         col1, col2 = st.columns([1, 2])
 
+        
         with col1:
-            image_path = get_player_image_path(selected_player)
-            if image_path:
-                st.image(image_path, caption=selected_player, width=200)
-            else:
-                st.image("https://via.placeholder.com/250x350?text=No+Image", caption=selected_player, width=200)
+            image_path, is_fallback = get_player_image_path(selected_player)
+            st.image(image_path, caption=selected_player, width=200)
+    
+            if is_fallback:
                 st.markdown(
-            "<div style='color: #000; font-size: 0.9rem; margin-top: 0.5rem;'>No available picture for this player.</div>",
-            unsafe_allow_html=True
-        )
+                "<div style='color: #666; font-size: 0.9rem; margin-top: 0.5rem;'> No available picture for this player.</div>",
+                unsafe_allow_html=True
+            
+                )
         with col2:
             st.subheader(f"{selected_player}")
             st.markdown(f"**Position:** {player_data['POS']}")
