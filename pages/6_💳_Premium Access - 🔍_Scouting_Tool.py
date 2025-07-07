@@ -8,90 +8,62 @@ import os
 # ⚙️ Configurazione pagina
 st.set_page_config(page_title="Drafted Players - Player List", layout='wide')
 
-# 🌐 Styling
-st.markdown("""
+# 🧠 Inizializza stato login se mancante
+if "is_logged_in" not in st.session_state:
+    st.session_state.is_logged_in = False
+
+# 🌈 Colori dinamici in base al login
+bg_color = "#2f6974" if not st.session_state["is_logged_in"] else "#f7f7f7"
+text_color = "white" if not st.session_state["is_logged_in"] else "#000000"
+
+# 🌐 Styling dinamico
+st.markdown(f"""
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
     <style>
-        html, body, .stApp {
-            background-color: #f7f7f7 !important;
-            color: #000 !important;
-        }
-        h1, h2, h3, h4, h5, h6 {
+        html, body, .stApp {{
+            background-color: {bg_color} !important;
+            color: {text_color} !important;
+        }}
+        h1, h2, h3, h4, h5, h6 {{
             font-family: 'Orbitron', sans-serif !important;
             color: #f45208 !important;
-        }
-        .subtitle-effect {
+        }}
+        .subtitle-effect {{
             font-family: 'Orbitron', sans-serif;
             font-size: 1.2rem;
-            color: #333;
+            color: {text_color};
             text-align: center;
             margin-bottom: 1rem;
-        }
-        .title-custom {
+        }}
+        .title-custom {{
             font-family: 'Orbitron', sans-serif;
             font-size: 2.5rem;
             font-weight: 700;
             color: #f45208;
             text-align: center;
             margin-bottom: 0.5rem;
-        }
-        .player-container {
-            display: flex;
-            align-items: center;
-            margin-bottom: 1rem;
-            padding: 10px;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            color: #000 !important;
-        }
-        .player-photo {
-            width: 100px;
-            height: 100px;
-            object-fit: cover;
-            border-radius: 8px;
-            margin-right: 15px;
-        }
-        .player-info {
-            flex: 1;
-            color: #000 !important;
-        }
-        .player-score, .player-pick {
-            width: 120px;
-            text-align: center;
+        }}
+        label, .stSelectbox label {{
+            color: {text_color} !important;
             font-weight: bold;
-            color: #000 !important;
-        }
-        label, .stSelectbox label, .stSelectbox div[data-baseweb="select"] {
-            color: #000 !important;
-            font-weight: bold;
-        }
-
-        /* 🚀 More Aggressive CSS for the button */
-        /* Targets the button's internal element for higher specificity */
-        button[data-testid="baseButton-secondary"] {
-            background-color: #f45208 !important; /* Orange background */
-            color: white !important; /* White text */
+        }}
+        button[data-testid="baseButton-secondary"] {{
+            background-color: #f45208 !important;
+            color: white !important;
             font-weight: bold !important;
             font-family: 'Orbitron', sans-serif !important;
             border-radius: 6px !important;
             padding: 0.5rem 1.5rem !important;
             border: none !important;
             transition: background-color 0.3s ease;
-        }
-
-        button[data-testid="baseButton-secondary"]:hover {
-            background-color: #ff6d2e !important; /* Lighter orange on hover */
-            color: white !important; /* Keep text white on hover */
-        }
+        }}
+        button[data-testid="baseButton-secondary"]:hover {{
+            background-color: #ff6d2e !important;
+        }}
     </style>
 """, unsafe_allow_html=True)
 
-# 🧠 Stato iniziale di login
-if "is_logged_in" not in st.session_state:
-    st.session_state.is_logged_in = False
-
-# 🔐 Blocco login
+# 🔐 BLOCCO LOGIN
 if not st.session_state.is_logged_in:
     st.markdown("## Login Required")
 
@@ -101,13 +73,9 @@ if not st.session_state.is_logged_in:
 
         col1, col2 = st.columns([1, 2])
         with col1:
-            login_btn = st.form_submit_button("🔓 Enter") # This is the button we are styling
+            login_btn = st.form_submit_button("🔓 Enter")
         with col2:
-            st.markdown("""
-                <div style='font-size:14px; color: gray; padding-top: 6px;'>
-                     <strong>Click Enter twice</strong> if it doesn't work the first time.
-                </div>
-            """, unsafe_allow_html=True)
+            st.markdown("<div style='font-size:14px; color: gray; padding-top: 6px", unsafe_allow_html=True)
 
         if login_btn:
             if os.path.exists("utenti.json"):
@@ -132,10 +100,34 @@ if not st.session_state.is_logged_in:
                                 ❌ Invalid credentials.
                             </div>
                         """, unsafe_allow_html=True)
-                except Exception as e:
-                    st.error("❌ Unable to read user data.")
+                except Exception:
+                    st.markdown("""
+                        <div style='
+                            background-color: #f0f0f0;
+                            color: black;
+                            padding: 12px;
+                            border-radius: 6px;
+                            font-weight: bold;
+                            font-size: 15px;
+                            margin-top: 10px;
+                        '>
+                            Please Click<strong> Enter again<strong>. 
+                        </div>
+                    """, unsafe_allow_html=True)
             else:
-                st.error("⚠️ No registered user found. Please go to the Premium Access page first.")
+                st.markdown("""
+                    <div style='
+                        background-color: #f0f0f0;
+                        color: black;
+                        padding: 12px;
+                        border-radius: 6px;
+                        font-weight: bold;
+                        font-size: 15px;
+                        margin-top: 10px;
+                    '>
+                        ⚠️ No registered user found. Please go to the Premium Access page first.
+                    </div>
+                """, unsafe_allow_html=True)
 
     st.stop()
 

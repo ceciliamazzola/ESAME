@@ -4,6 +4,9 @@ import json
 # CONFIGURAZIONE DELLA PAGINA
 st.set_page_config(page_title="Premium Access", page_icon="💳")
 
+# Inizio del contenitore con sfondo petrolio
+st.markdown('<div class="premium-access-bg">', unsafe_allow_html=True)
+
 # CSS globale
 st.markdown("""
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
@@ -169,4 +172,7 @@ if st.session_state.selected_plan:
             else:
                 st.error("Please enter both email and password.")
 
-    st.markdown("🔁 Now go to the **Drafted Players** page to access your premium content.")
+    st.markdown("🔁 Please now go to the **Scouting tool** page to access your premium content.")
+
+# Fine del contenitore
+st.markdown('</div>', unsafe_allow_html=True)
