@@ -86,7 +86,8 @@ try:
         .sort_values("Overall Pick")
     )
 
-    st.subheader(f"Draft {year} - Round {round_selected}")
+    st.subheader(f"<h3 style='color: black;'>Draft {year} - Round {round_selected}</h3>", unsafe_allow_html=True)
+
 
     def find_logo(abbrev):
         for ext in [".png", ".jpg", ".jpeg", ".svg"]:

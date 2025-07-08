@@ -108,20 +108,20 @@ st.markdown("<br>", unsafe_allow_html=True)
 plans = [
     {
         "name": "Starter",
-        "price": "$19/month",
+        "price": "$9.99/month",
         "desc": "Perfect for individual users",
         "features": ["Basic player statistics", "Weekly reports", "Email support", "Limited data exports"]
     },
     {
         "name": "Pro",
-        "price": "$49/month",
+        "price": "$14.99/month",
         "desc": "Best for professional scouts and analysts",
         "features": ["Advanced analytics", "Player comparisons", "Real-time updates", "Priority support", "Unlimited exports", "Custom reports"],
         "popular": True
     },
     {
         "name": "Enterprise",
-        "price": "$79/month",
+        "price": "$19.99/month",
         "desc": "Complete solution for organizations",
         "features": ["Full analytics suite", "Custom reports", "API access", "Dedicated support", "Team collaboration", "White-label options"]
     }
