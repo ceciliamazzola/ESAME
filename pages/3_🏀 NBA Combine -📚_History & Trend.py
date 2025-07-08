@@ -11,6 +11,7 @@ import os
 current_dir = Path(__file__).parent
 df_path = current_dir.parent / "draft_history_fin.csv"
 logo_folder = current_dir.parent / "logos"
+players_img_folder = current_dir.parent / "images"  # <-- Cartella immagini giocatori
 image_path = current_dir.parent / "bandiere" / "mappa.png"
 
 # 🌐 Stile personalizzato Orbitron
@@ -87,11 +88,9 @@ try:
     )
 
     st.markdown(
-    f"<p style='color:black; font-size:24px; font-weight:bold;'>Draft {year} - Round {round_selected}</p>",
-    unsafe_allow_html=True
+        f"<p style='color:black; font-size:24px; font-weight:bold;'>Draft {year} - Round {round_selected}</p>",
+        unsafe_allow_html=True
     )
-
-
 
     def find_logo(abbrev):
         for ext in [".png", ".jpg", ".jpeg", ".svg"]:
@@ -103,15 +102,35 @@ try:
     for _, r in filtered.iterrows():
         col1, col2, col3 = st.columns([1, 4, 2])
 
-        col1.markdown(f"<div style='text-align:center; font-size:24px; font-weight:bold; color:#333;'>{r['Overall Pick']}</div>", unsafe_allow_html=True)
+        # Nome file immagine giocatore (Nome_Cognome)
+        player_filename = r['Player'].replace(" ", "_")
+        player_img_path = players_img_folder / f"{player_filename}.png"
 
+        # Se l'immagine non esiste, usa empty.png
+        if not player_img_path.exists():
+            player_img_path = players_img_folder / "empty.png"
+
+        # Colonna 1: immagine giocatore
+        img = Image.open(player_img_path)
+        img.thumbnail((80, 80), Image.LANCZOS)
+        col1.image(img, use_container_width=False)
+
+        # Colonna 2: nome e info pick
         col2.markdown(f"""
-            <div style="padding: 4px 8px;">
-                <div style="font-size:18px; font-weight:bold; color: #222;">{r['Player']}</div>
-                <div style="font-size:14px; color: #555;">{int(r['Round Number'])}° Round, Pick {int(r['Round Pick'])}</div>
-            </div>
-        """, unsafe_allow_html=True)
+                <div style="padding: 4px 8px;">
+                    <div style="font-size:18px; font-weight:bold; color: #222;">
+                        {int(r['Overall Pick'])} – {r['Player']}
+                    </div>
+                    <div style="font-size:14px; color: #555;">
+                        {int(r['Round Number'])}° Round, Pick {int(r['Round Pick'])}
+                    </div>
+                    <div style="font-size:14px; color: #555; font-style:italic;">
+                        from: {r.get('Affiliation', 'N/A')}
+                    </div>
+                </div>
+            """, unsafe_allow_html=True)
 
+        # Colonna 3: logo squadra
         logo_path = find_logo(r["Team Abbreviation"])
         if logo_path:
             img = Image.open(logo_path)
@@ -124,6 +143,7 @@ try:
 
 except Exception as e:
     st.error(f"Failed to load data: {e}")
+
 
 # 📊 Grafico affiliations
 st.markdown("<br><br>", unsafe_allow_html=True)
