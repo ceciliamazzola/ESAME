@@ -27,8 +27,9 @@ st.markdown("""
             the future of the game
         </div>
         <div class="menu-labels">
-            <div class="menu-item">NBA Combine</div>
-            <div class="menu-item">NBA Stats</div>
+            <div class="menu-item" style="font-size:1rem; color:white;">
+                Check the sidebar to explore NBA Combine & Stats
+            </div>
         </div>
     </div>
 """, unsafe_allow_html=True)
