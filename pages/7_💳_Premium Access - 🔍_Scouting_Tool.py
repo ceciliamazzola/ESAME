@@ -134,9 +134,35 @@ if not st.session_state.is_logged_in:
 
 
 # --- CONTENUTO PRINCIPALE DELLA PAGINA (solo dopo login) ---
+st.markdown("<div class='title-custom'>SCOUTING TOOL</div>", unsafe_allow_html=True)
 
-st.markdown("<div class='title-custom'>Drafted Players</div>", unsafe_allow_html=True)
-st.markdown("<div class='subtitle-effect'>Browse players selected in the NBA Draft</div>", unsafe_allow_html=True)
+st.markdown("""
+<div style="background-color:#f7f7f7; padding:20px; border-radius:10px; border-left:5px solid #f45208;">
+    <p style="color: #000000 !important; font-family:'Orbitron', sans-serif; font-size: 1.5rem; margin: 0 0 6px 0;">
+        Welcome to our revolutionary NBA Scouting Tool!
+    </p>
+    <p style="color:#000000; margin: 2px 0; line-height: 1.2;">
+        Now available in a <strong>premium version</strong>, this tool lets you <strong>evaluate each player</strong>
+        based on their college season performance, generating a <strong>predictive score</strong> for their potential draft outcome.
+    </p>
+    <p style="color:#000000; margin: 2px 0; line-height: 1.2;">
+        Just select a season and you're ready to go, our algorithm breaks down the stats to give you a fast, comparable projection.
+    </p>
+    <p style="color:#000000; margin: 2px 0; line-height: 1.2;">
+        <em>Note:</em> The score is <strong>purely performance-based</strong> and
+        <span style="color:#000000;">doesn’t account for mindset, team interest, or coaching needs</span>,
+        so use it as a solid, data-driven starting point.
+    </p>
+    <p style="font-weight:bold; color:#000000; margin: 2px 0; line-height: 1.2;">
+        Start scouting tomorrow’s stars <span style="color:#000000;">before anyone else!</span>
+    </p>
+</div>
+""", unsafe_allow_html=True)
+
+
+st.markdown("<br>", unsafe_allow_html=True)
+
+
 
 # 📁 Percorsi relativi
 current_dir = Path(__file__).parent

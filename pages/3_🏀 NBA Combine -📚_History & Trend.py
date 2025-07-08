@@ -8,6 +8,7 @@ from io import BytesIO
 import os
 
 # Percorsi portabili
+st.set_page_config(layout="wide")
 current_dir = Path(__file__).parent
 df_path = current_dir.parent / "draft_history_fin.csv"
 logo_folder = current_dir.parent / "logos"
@@ -167,6 +168,26 @@ st.markdown(f"""
     </h3>
 """, unsafe_allow_html=True)
 
+custom_blue_scale = [
+    [0.00, "#e1f5fe"],  # azzurro chiarissimo
+    [0.07, "#cceaf6"],
+    [0.13, "#b7dfef"],
+    [0.20, "#a2d4e7"],
+    [0.27, "#8dc9e0"],
+    [0.33, "#78bec8"],
+    [0.40, "#63b3c0"],
+    [0.47, "#4ea8b8"],
+    [0.53, "#479aa9"],
+    [0.60, "#408c9a"],
+    [0.67, "#397e8b"],
+    [0.73, "#336f7c"],
+    [0.80, "#2f6974"],
+    [0.87, "#2f6974"],
+    [1.00, "#2f6974"]
+]
+
+
+# Grafico bar aggiornato
 fig = px.bar(
     top_affiliations,
     x='Players',
@@ -174,8 +195,7 @@ fig = px.bar(
     orientation='h',
     text='Players',
     color='Players',
-    color_continuous_scale='Blues',
-    # Set the category order for the y-axis based on the sorted DataFrame
+    color_continuous_scale=custom_blue_scale,
     category_orders={"Affiliation": top_affiliations['Affiliation'].tolist()}
 )
 
