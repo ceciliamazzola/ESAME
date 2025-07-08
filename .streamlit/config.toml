@@ -1,0 +1,7 @@
+[theme]
+base="dark"                      # imposta il tema di default su “dark”
+primaryColor="#f45208"           # colore principale (bottoni, slider…)
+backgroundColor="#111"           # sfondo generale
+secondaryBackgroundColor="#333"  # sfondo di sidebar e pane di input
+textColor="#fff"                 # colore del testo
+font="sans serif"                # font di default
