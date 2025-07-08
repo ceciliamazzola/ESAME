@@ -86,7 +86,8 @@ try:
         .sort_values("Overall Pick")
     )
 
-    st.subheader(f"<h3 style='color: black;'>Draft {year} - Round {round_selected}</h3>", unsafe_allow_html=True)
+    st.markdown(f"<div style='font-size:24px; font-weight:600; color:black;'>Draft {year} - Round {round_selected}</div>", unsafe_allow_html=True)
+
 
 
     def find_logo(abbrev):
