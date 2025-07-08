@@ -528,7 +528,11 @@ elif shot_type == "Missed":
     filtered_df = filtered_df[filtered_df["Shot Made Flag"] == 0]
 
 if filtered_df.empty:
-    st.warning("No data found for this selection.")
+    st.markdown(
+    "<p style='color:black; font-size:18px;'>No data found for this selection.</p>",
+    unsafe_allow_html=True
+    )
+
     st.stop()
 
 # ---------------------------
