@@ -493,7 +493,11 @@ st.markdown("""
 
 st.markdown("<span style='color:black; margin-bottom: 0.1em;'><strong>Select Player</strong></span>", unsafe_allow_html=True)
 players = sorted(df["Player Name"].unique())
-selected_player = st.selectbox("Player", players, label_visibility="collapsed")
+# Cerca "LeBron James" e imposta il suo indice come default
+default_player = "LeBron James"
+default_index = players.index(default_player) if default_player in players else 0
+selected_player = st.selectbox("Player", players, index=default_index, label_visibility="collapsed")
+
 
 seasons = sorted(df["Season"].unique())
 all_seasons_checked = st.checkbox("Show All Seasons", value=True)
