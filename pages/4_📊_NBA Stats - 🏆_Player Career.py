@@ -626,13 +626,18 @@ def sized_hexbin(ax, hc, hc2, cmap, norm):
 st.markdown(f"<div class='orbitron-title'>Hexmap FG% vs League Avg — {selected_player} (all seasons)</div>", unsafe_allow_html=True)
 
 st.markdown("""
-<span style='color:black'><strong>Color Legend (FG% vs League Avg)</strong></span><br>
-<span style='color:black'>🔵 Dark Blue: Much lower than league average</span><br>
-<span style='color:black'>🔹 Light Blue: Slightly below average</span><br>
-<span style='color:black'>🟡 Yellow: Around league average</span><br>
-<span style='color:black'>🟠 Orange: Slightly above average</span><br>
-<span style='color:black'>🔴 Red: Much higher than league average</span>
+<div style='padding: 10px; background-color: #f9f9f9; border: 1px solid #ccc; border-radius: 8px; color: black;'>
+  <div style='font-weight:bold; margin-bottom: 6px;'>Color Legend (FG% vs League Avg)</div>
+
+  <div><span style='display:inline-block; width:15px; height:15px; background-color:#00008B; margin-right:8px; border-radius:3px;'></span><strong style='color:#00008B;'>Dark Blue</strong>: Much lower than league average</div>
+  <div><span style='display:inline-block; width:15px; height:15px; background-color:#1E90FF; margin-right:8px; border-radius:3px;'></span><strong style='color:#1E90FF;'>Light Blue</strong>: Slightly below average</div>
+  <div><span style='display:inline-block; width:15px; height:15px; background-color:#FFD700; margin-right:8px; border-radius:3px;'></span><strong style='color:#FFD700;'>Yellow</strong>: Around league average</div>
+  <div><span style='display:inline-block; width:15px; height:15px; background-color:#FFA500; margin-right:8px; border-radius:3px;'></span><strong style='color:#FFA500;'>Orange</strong>: Slightly above average</div>
+  <div><span style='display:inline-block; width:15px; height:15px; background-color:#FF0000; margin-right:8px; border-radius:3px;'></span><strong style='color:#FF0000;'>Red</strong>: Much higher than league average</div>
+</div>
 """, unsafe_allow_html=True)
+
+
 
 player_all = df[df["Player Name"] == selected_player]
 league_avg = df.copy()
