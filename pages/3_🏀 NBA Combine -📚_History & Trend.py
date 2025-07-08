@@ -86,7 +86,10 @@ try:
         .sort_values("Overall Pick")
     )
 
-    st.markdown(f"<div style='font-size:24px; font-weight:600; color:black;'>Draft {year} - Round {round_selected}</div>", unsafe_allow_html=True)
+    st.markdown(
+    f"<p style='color:black; font-size:24px; font-weight:bold;'>Draft {year} - Round {round_selected}</p>",
+    unsafe_allow_html=True
+    )
 
 
 
