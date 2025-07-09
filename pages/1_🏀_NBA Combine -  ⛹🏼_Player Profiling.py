@@ -125,19 +125,53 @@ st.markdown("""
 
 st.markdown("<br>", unsafe_allow_html=True)  # Una riga vuota
 
+import os
+import glob
+
+import os
+import glob
+
 def get_player_image_path(player_name):
+    """
+    Restituisce il percorso dell'immagine di un giocatore, cercando:
+      1) nomi esatti con underscore o trattino
+      2) wildcard con underscore o trattino
+    Se non trova nulla, torna 'images/empty.png' e flag di fallback a True.
+    """
+    # Provo a fare split "Cognome, Nome"
     try:
         last, first = player_name.split(", ")
-        base_name = f"{first}_{last}".replace(" ", "_")
-    except:
+        base_name = f"{first}_{last}"
+    except ValueError:
+        # Se non c'è la virgola, considero tutto come nome unico
         base_name = player_name.replace(" ", "_")
 
-    for ext in ["png", "jpg", "jpeg"]:
-        image_path = f"images/{base_name}.{ext}"
-        if os.path.exists(image_path):
-            return image_path, False  # False = non è immagine fallback
+    # Normalizzo doppie underscore o spazi residui
+    base_name = "_".join(part for part in base_name.split("_") if part)
 
-    return "images/empty.png", True  # True = è immagine fallback
+    exts = ("png", "jpg", "jpeg")
+    # Variazioni da provare: con underscore e con trattino
+    name_variants = { base_name, base_name.replace("_", "-") }
+
+    # 1) Ricerca esatta
+    for name in name_variants:
+        for ext in exts:
+            path = os.path.join("images", f"{name}.{ext}")
+            if os.path.exists(path):
+                return path, False
+
+    # 2) Ricerca wildcard
+    for name in name_variants:
+        for ext in exts:
+            pattern = os.path.join("images", f"*{name}*.{ext}")
+            matches = glob.glob(pattern)
+            if matches:
+                # potresti ordinarli se vuoi
+                return matches[0], False
+
+    # 3) Fallback
+    return "images/empty.png", True
+
 
 
 df = pd.read_csv("Draft_Combine_00_25.csv")
