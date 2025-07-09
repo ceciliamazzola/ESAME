@@ -187,10 +187,10 @@ if df is not None:
         if "HGT" in selected_phys and "WGT" in selected_phys:
             col_hgt, col_wgt = st.columns(2)
             with col_hgt:
-                fig_hgt = px.bar(selected_df, x="PLAYER", y="HGT ", text="HGT (Inches)")
+                fig_hgt = px.bar(selected_df, x="PLAYER", y="HGT", text="HGT")
                 fig_hgt.update_traces(textposition='outside', marker=dict(color='#326974'))
                 fig_hgt.update_layout(
-                    title="Height Comparison",
+                    title="Height Comparison (INCHES)",
                     margin=dict(t=40),
                     plot_bgcolor='#f7f7f7',
                     paper_bgcolor='#f7f7f7',
@@ -209,10 +209,10 @@ if df is not None:
                 st.plotly_chart(fig_hgt, use_container_width=True)
 
             with col_wgt:
-                fig_wgt = px.bar(selected_df, x="PLAYER", y="WGT", text="WGT (lbs)")
+                fig_wgt = px.bar(selected_df, x="PLAYER", y="WGT", text="WGT")
                 fig_wgt.update_traces(textposition='outside', marker=dict(color='#326974'))
                 fig_wgt.update_layout(
-                    title="Weight Comparison",
+                    title="Weight Comparison (LBS)",
                     margin=dict(t=40),
                     plot_bgcolor='#f7f7f7',
                     paper_bgcolor='#f7f7f7',
