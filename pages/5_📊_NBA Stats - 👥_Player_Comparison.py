@@ -209,7 +209,6 @@ else:
     st.markdown("<p style='color:black;'>Select players to display visualizations.</p>", unsafe_allow_html=True)
 
 
-
 import streamlit as st
 import pandas as pd
 import plotly.express as px
