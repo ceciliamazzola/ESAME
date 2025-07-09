@@ -303,7 +303,11 @@ fig_season_eff.update_layout(
         linecolor="black",
         gridcolor="lightgray"
     ),
-    legend=dict(font=dict(color="black"))
+    
+    legend=dict(
+        title=dict(text='Player', font=dict(color="black")),  # Titolo legenda in nero
+        font=dict(color="black")                               # Etichette legenda in nero
+    )
 )
 st.plotly_chart(fig_season_eff, use_container_width=True)
 
@@ -368,6 +372,9 @@ fig_oer.update_layout(
         linecolor="black",
         gridcolor="lightgray"
     ),
-    legend=dict(font=dict(color="black"))
+    legend=dict(
+        title=dict(text='Player', font=dict(color="black")),  # Titolo legenda in nero
+        font=dict(color="black")                               # Etichette legenda in nero
+    )
 )
 st.plotly_chart(fig_oer, use_container_width=True)
