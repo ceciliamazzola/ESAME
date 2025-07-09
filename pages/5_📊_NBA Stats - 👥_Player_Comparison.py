@@ -122,7 +122,6 @@ raw_df, career_df, df_season_fg, df_season_split, df_season_ft = load_data('Play
 positions = sorted(raw_df['pos'].dropna().unique())
 selected_positions = st.multiselect("Select positions:", positions, default=positions)
 filtered = raw_df[raw_df['pos'].isin(selected_positions)]
-st.write(f"**Players available:** {filtered['player_x'].nunique()}")
 
 st.markdown(f"""
     <div style='color: black; font-weight: 600; font-size: 16px;'>
