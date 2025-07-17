@@ -42,13 +42,14 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Bottone indietro
+# Bottone indietro
 st.markdown("""
     <form action="/" method="get">
         <button type="submit" style="
             padding: 10px 20px;
-            background-color: #f45208;
-            color: white;
-            border: none;
+            background-color: #f7f7f7;
+            color: black;
+            border: 2px solid black !important;
             border-radius: 8px;
             font-weight: bold;
             font-size: 16px;
