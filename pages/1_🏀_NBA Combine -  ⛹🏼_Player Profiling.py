@@ -277,7 +277,7 @@ if df is not None:
                     <div style='margin-bottom: 1rem;'>
                         <strong style='color:black;'>{row['PLAYER']}</strong><br>
                         <div style='position: relative; background: #ddd; border-radius: 12px; height: 28px; width: 100%;'>
-                            <div style='background: #f45208; height: 100%; width: {bmi_percent*100:.1f}%; border-radius: 12px;'></div>
+                            <div style='background: #326974; height: 100%; width: {bmi_percent*100:.1f}%; border-radius: 12px;'></div>
                             <div style='position: absolute; top: 0; left: 50%; transform: translateX(-50%); color: white; font-weight: bold; font-size: 15px; line-height: 28px;'>
                                 {bmi_value:.1f} BMI
                             </div>
@@ -329,7 +329,7 @@ st.markdown("""
 <p style='margin-top: -10px; margin-bottom: 20px; font-size: 15px; color: black;'>
     <span style='color: #43aa8b; font-weight: bold;'>Green</span> indicates better performance, 
     <span style='color: #f94144; font-weight: bold;'>Red</span> indicates worse, 
-    <span style='color: #f8961e; font-weight: bold;'>Orange</span> indicates equal.
+    <span style='color: #9d9891; font-weight: bold;'>Grey</span> indicates equal.
 </p>
 """, unsafe_allow_html=True)
 
@@ -389,7 +389,7 @@ if len(selected_players) == 2 and selected_metrics:
                 color1 = "#f94144"
                 color2 = "#43aa8b"
             else:
-                color1 = color2 = "#f8961e"  # pari
+                color1 = color2 = "#9d9891"  # pari
 
             # Visualizza barre per Player 1
             with col1:
