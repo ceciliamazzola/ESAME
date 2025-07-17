@@ -20,7 +20,6 @@ st.markdown("""
             font-family: 'Orbitron', sans-serif !important;
             color: #f45208 !important;
         }
-            
         .subtitle-effect {
             font-family: 'Orbitron', sans-serif;
             font-size: 1.2rem;
@@ -37,8 +36,10 @@ st.markdown("""
             margin-bottom: 0.5rem;
         }
         .metric-label {
+            font-family: 'Orbitron', sans-serif;
             font-weight: bold;
-            color: #333;
+            font-size: 1.3rem;
+            color: #333 !important;
             margin-top: 12px;
             margin-bottom: 4px;
         }
@@ -68,17 +69,22 @@ st.markdown("""
             font-weight: bold;
             color: #333;
         }
-               
-        .metric-label {
-        font-family: 'Orbitron', sans-serif;
-        font-weight: bold;
-        font-size: 1.3rem;
-        color: #333 !important;
-        margin-top: 12px;
-        margin-bottom: 4px;
-      }
+        label, .stSelectbox label, .stMultiSelect label {
+            color: #000 !important;
+            font-weight: bold;
+        }
+        .css-1wa3eu0-option, .css-1n76uvr {
+            color: #000 !important;
+        }
+        .css-1pahdxg-control, .css-1s2u09g-control, .css-1uccc91-singleValue {
+            color: #000 !important;
+        }
+        .css-1r6slb0 {
+            color: #000 !important;
+        }
     </style>
 """, unsafe_allow_html=True)
+
 st.markdown("""
 <style>
 /* Etichette dei widget */
