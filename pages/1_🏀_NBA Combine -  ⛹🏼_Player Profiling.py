@@ -72,7 +72,7 @@ st.markdown("""
         .metric-label {
         font-family: 'Orbitron', sans-serif;
         font-weight: bold;
-        font-size: 1.5rem
+        font-size: 1.3rem;
         color: #333 !important;
         margin-top: 12px;
         margin-bottom: 4px;
@@ -109,7 +109,6 @@ label, .stSelectbox label, .stMultiSelect label {
 }
 </style>
 """, unsafe_allow_html=True)
-
 
 st.markdown("<div class='title-custom'>PLAYER PROFILING</div>", unsafe_allow_html=True)
 
