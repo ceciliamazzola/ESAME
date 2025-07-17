@@ -20,6 +20,7 @@ st.markdown("""
             font-family: 'Orbitron', sans-serif !important;
             color: #f45208 !important;
         }
+            
         .subtitle-effect {
             font-family: 'Orbitron', sans-serif;
             font-size: 1.2rem;
@@ -173,132 +174,159 @@ def get_player_image_path(player_name):
     return "images/empty.png", True
 
 
-
+import matplotlib.pyplot as plt
 df = pd.read_csv("Draft_Combine_00_25.csv")
 
-if df is not None:
-    available_years = sorted(df['YEAR'].dropna().unique())
-    selected_year = st.selectbox("Select draft year", available_years, index=len(available_years)-1)
-    df_year = df[df['YEAR'] == selected_year]
-    player_names = sorted(df_year['PLAYER'].dropna().unique())
-    selected_player = st.selectbox("View detailed profile for a player", player_names)
+import os
+import glob
+import streamlit as st
+import pandas as pd
 
-    if selected_player:
-        player_data = df_year[df_year['PLAYER'] == selected_player].iloc[0]
-        col1, col2 = st.columns([1, 2])
+# Funzione per recuperare immagine giocatore
+def get_player_image_path(player_name):
+    try:
+        last, first = player_name.split(", ")
+        base_name = f"{first}_{last}"
+    except ValueError:
+        base_name = player_name.replace(" ", "_")
+    base_name = "_".join(part for part in base_name.split("_") if part)
+    exts = ("png", "jpg", "jpeg")
+    variants = {base_name, base_name.replace("_", "-")}
+    for name in variants:
+        for ext in exts:
+            path = os.path.join("images", f"{name}.{ext}")
+            if os.path.exists(path):
+                return path, False
+    for name in variants:
+        for ext in exts:
+            matches = glob.glob(os.path.join("images", f"*{name}*.{ext}"))
+            if matches:
+                return matches[0], False
+    return "images/empty.png", True
 
-        
-        with col1:
-            image_path, is_fallback = get_player_image_path(selected_player)
-            st.image(image_path, caption=selected_player, width=200)
-    
-            if is_fallback:
-                st.markdown(
-                "<div style='color: #666; font-size: 0.9rem; margin-top: 0.5rem;'> No available picture for this player.</div>",
+# Caricamento dataset
+
+import os
+import glob
+import streamlit as st
+import pandas as pd
+
+# Funzione per recuperare immagine giocatore
+def get_player_image_path(player_name):
+    try:
+        last, first = player_name.split(", ")
+        base_name = f"{first}_{last}"
+    except ValueError:
+        base_name = player_name.replace(" ", "_")
+    base_name = "_".join(part for part in base_name.split("_") if part)
+    exts = ("png", "jpg", "jpeg")
+    variants = {base_name, base_name.replace("_", "-")}
+    for name in variants:
+        for ext in exts:
+            path = os.path.join("images", f"{name}.{ext}")
+            if os.path.exists(path):
+                return path, False
+    for name in variants:
+        for ext in exts:
+            matches = glob.glob(os.path.join("images", f"*{name}*.{ext}"))
+            if matches:
+                return matches[0], False
+    return "images/empty.png", True
+
+
+
+
+# Selezione anno
+years = sorted(df['YEAR'].dropna().unique())
+selected_year = st.selectbox("Select Draft Year", years, index=len(years)-1)
+df_year = df[df['YEAR'] == selected_year]
+
+# Selezione giocatore singolo
+player_names = sorted(df_year['PLAYER'].dropna().unique())
+selected_player = st.selectbox("View detailed profile for a player", player_names)
+
+if selected_player:
+    data = df_year[df_year['PLAYER'] == selected_player].iloc[0]
+    c1, c2 = st.columns([1,2])
+    with c1:
+        img_path, fallback = get_player_image_path(selected_player)
+        st.image(img_path, caption=selected_player, width=200)
+        if fallback:
+            st.markdown("<div style='color:#666; font-size:0.9rem;'>No available picture for this player.</div>", unsafe_allow_html=True)
+    with c2:
+        st.subheader(selected_player)
+        st.markdown(f"**Position:** {data['POS']}")
+        st.markdown(f"**Height:** {data['HGT']} inches")
+        st.markdown(f"**Weight:** {data['WGT']} lbs")
+        bmi = f"{data['BMI']:.1f}" if pd.notna(data['BMI']) else "N/A"
+        st.markdown(f"**BMI:** {bmi}")
+        bf = f"{data['BF']:.1f}" if pd.notna(data['BF']) else "N/A"
+        st.markdown(f"**Body Fat %:** {bf}")
+        st.markdown(f"**Wingspan:** {data['WNGSPN']} inches")
+    st.markdown("---")
+
+
+# Confronto multiplo con barre orizzontali normalizzate al valore massimo del dataset
+# Confronto multiplo con barre orizzontali normalizzate al massimo dataset
+selected_players = st.multiselect(
+    "Compare players from the same year", player_names,
+    default=[selected_player] if selected_player else []
+)
+if selected_players:
+    df_sel = df_year[df_year['PLAYER'].isin(selected_players)]
+    st.subheader("Physical Attributes Comparison")
+
+    # Definizione metriche con massimo globale\    
+    metrics = {
+        'HGT':    {'label': 'Height',   'unit': 'inches', 'max': df['HGT'].max()},
+        'WGT':    {'label': 'Weight',   'unit': 'lbs',    'max': df['WGT'].max()},
+        'BMI':    {'label': 'BMI',      'unit': '',       'max': df['BMI'].max()},
+        'WNGSPN': {'label': 'Wingspan','unit': 'inches', 'max': df['WNGSPN'].max()},
+        'STNDRCH':{'label': 'Standing Reach', 'unit': 'inches', 'max': df['STNDRCH'].max()}
+    }
+
+
+
+    # Seleziona metriche da visualizzare
+    chosen = st.multiselect(
+        "Select physical metrics to display (bars normalized to dataset max)",
+        options=list(metrics.keys()),
+        default=list(metrics.keys())
+    )
+    if not chosen:
+        st.info("Select at least one metric to display.")
+    else:
+        # Visualizza ogni metrica con barre orizzontali
+        for metric in chosen:
+            cfg = metrics[metric]
+            # Sottotitolo in nero
+            unit_str = f" ({cfg['unit']})" if cfg['unit'] else ""
+            st.markdown(
+                f"<div class='metric-label'>{cfg['label']} ({cfg['unit']})</div>",
                 unsafe_allow_html=True
-            
-                )
-        with col2:
-            st.subheader(f"{selected_player}")
-            st.markdown(f"**Position:** {player_data['POS']}")
-            st.markdown(f"**Height:** {player_data['HGT']} inches")
-            st.markdown(f"**Weight:** {player_data['WGT']} lbs")
-            st.markdown(f"**BMI:** {player_data['BMI']:.1f}" if pd.notna(player_data['BMI']) else "**BMI:** N/A")
-            st.markdown(f"**Body Fat %:** {player_data['BF']}" if pd.notna(player_data['BF']) else "**Body Fat %:** N/A")
-            st.markdown(f"**Wingspan:** {player_data['WNGSPN']} inches")
-
-        st.markdown("---")
-
-    selected_players = st.multiselect("Compare players from the same year", player_names, default=[selected_player])
-
-    if selected_players:
-        selected_df = df_year[df_year['PLAYER'].isin(selected_players)]
-        st.subheader("Physical Attributes Comparison")
-
-        phys_metrics = ["HGT", "WGT", "BMI", "BF", "WNGSPN", "STNDRCH"]
-        selected_phys = st.multiselect("Select physical metrics to display", phys_metrics, default=["HGT", "WGT", "BMI"])
-
-        if "HGT" in selected_phys and "WGT" in selected_phys:
-            col_hgt, col_wgt = st.columns(2)
-            with col_hgt:
-                fig_hgt = px.bar(selected_df, x="PLAYER", y="HGT", text="HGT")
-                fig_hgt.update_traces(textposition='outside', marker=dict(color='#326974'))
-                fig_hgt.update_layout(
-                    title="Height Comparison (INCHES)",
-                    margin=dict(t=40),
-                    plot_bgcolor='#f7f7f7',
-                    paper_bgcolor='#f7f7f7',
-                    font_color='#000',
-                    title_font=dict(color='#000'),
-                    xaxis=dict(
-                        title_font=dict(color='#000'),
-                        tickfont=dict(color='#000')
-                    ),
-                    yaxis=dict(
-                        title_font=dict(color='#000'),
-                        tickfont=dict(color='#000')
-                    ),
-                    legend=dict(font=dict(color='#000'))
-                )
-                st.plotly_chart(fig_hgt, use_container_width=True)
-
-            with col_wgt:
-                fig_wgt = px.bar(selected_df, x="PLAYER", y="WGT", text="WGT")
-                fig_wgt.update_traces(textposition='outside', marker=dict(color='#326974'))
-                fig_wgt.update_layout(
-                    title="Weight Comparison (LBS)",
-                    margin=dict(t=40),
-                    plot_bgcolor='#f7f7f7',
-                    paper_bgcolor='#f7f7f7',
-                    font_color='#000',
-                    title_font=dict(color='#000'),
-                    xaxis=dict(
-                        title_font=dict(color='#000'),
-                        tickfont=dict(color='#000')
-                    ),
-                    yaxis=dict(
-                        title_font=dict(color='#000'),
-                        tickfont=dict(color='#000')
-                    ),
-                    legend=dict(font=dict(color='#000'))
-                )
-                st.plotly_chart(fig_wgt, use_container_width=True)
-
-
-
-            selected_phys = [m for m in selected_phys if m not in ["HGT", "WGT"]]
-
-        if "BMI" in selected_phys:
-            st.markdown("<div style='font-size: 20px; font-weight: bold; color: black; margin-bottom: 10px;'>BMI Overview</div>", unsafe_allow_html=True)
-            for _, row in selected_df.iterrows():
-                bmi_value = row['BMI'] if pd.notna(row['BMI']) else 0
-                bmi_percent = min(max(bmi_value / 35, 0), 1)
-                st.markdown(f"""
-                    <div style='margin-bottom: 1rem;'>
-                        <strong style='color:black;'>{row['PLAYER']}</strong><br>
-                        <div style='position: relative; background: #ddd; border-radius: 12px; height: 28px; width: 100%;'>
-                            <div style='background: #326974; height: 100%; width: {bmi_percent*100:.1f}%; border-radius: 12px;'></div>
-                            <div style='position: absolute; top: 0; left: 50%; transform: translateX(-50%); color: white; font-weight: bold; font-size: 15px; line-height: 28px;'>
-                                {bmi_value:.1f} BMI
-                            </div>
-                        </div>
+            )
+            # Barre per ciascun giocatore
+            for _, row in df_sel.iterrows():
+                val = row[metric] if pd.notna(row[metric]) else 0
+                pct = val / cfg['max'] if cfg['max'] else 0
+                pct = max(0, min(pct, 1))
+                display = f"{val:.1f} {cfg['unit']}" if cfg['unit'] else f"{val:.1f}"
+                bar_html = f"""
+                <div style='margin-bottom:0.75rem;'>
+                  <strong>{row['PLAYER']}</strong>
+                  <div style='position:relative; background:#ddd; border-radius:8px; height:28px; overflow:hidden;'>
+                    <div style='background:#326974; width:{pct*100:.1f}%; height:100%;'></div>
+                    <div style='position:absolute; top:0; left:50%; transform:translateX(-50%); color:white; font-weight:bold; line-height:28px;'>
+                      {display}
                     </div>
-                """, unsafe_allow_html=True)
-            selected_phys = [m for m in selected_phys if m != "BMI"]
+                  </div>
+                </div>
+                """
+                st.markdown(bar_html, unsafe_allow_html=True)
+            st.markdown("---")
+else:
+    st.warning("Select at least one player to compare.")
 
-        if "WNGSPN" in selected_phys:
-            st.markdown("<div style='font-size: 20px; font-weight: bold; color: black; margin-bottom: 10px;'>Wingspan Overview</div>", unsafe_allow_html=True)
-            for _, row in selected_df.iterrows():
-                st.markdown(f"<strong style='color: black;'>{row['PLAYER']}</strong> — <span style='color: black;'>{row['WNGSPN']} inches</span>", unsafe_allow_html=True)
-                st.markdown("<div style='height: 2px; background-color: #ccc; margin: 8px 0 20px 0;'></div>", unsafe_allow_html=True)
-            selected_phys = [m for m in selected_phys if m != "WNGSPN"]
-
-        if "STNDRCH" in selected_phys:
-            st.markdown("<div style='font-size: 20px; font-weight: bold; color: black; margin-bottom: 10px;'>Standing Reach Overview</div>", unsafe_allow_html=True)
-            for _, row in selected_df.iterrows():
-                st.markdown(f"<strong style='color: black;'>{row['PLAYER']}</strong> — <span style='color: black;'>{row['STNDRCH']} inches</span>", unsafe_allow_html=True)
-                st.markdown("<div style='height: 2px; background-color: #ccc; margin: 8px 0 20px 0;'></div>", unsafe_allow_html=True)
-            selected_phys = [m for m in selected_phys if m != "STNDRCH"]
 
 
 # Caricamento dati

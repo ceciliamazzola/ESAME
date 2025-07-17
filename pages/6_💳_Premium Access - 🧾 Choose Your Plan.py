@@ -91,8 +91,8 @@ st.markdown("""
     <form action="/" method="get">
         <button type="submit" style="
             padding: 10px 20px;
-            background-color: #f7f7f7;
-            color: black;
+            background-color: #2f6974;
+            color: white;
             border: 2px solid black !important;
             border-radius: 8px;
             font-weight: bold;
