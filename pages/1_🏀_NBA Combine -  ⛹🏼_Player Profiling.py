@@ -68,6 +68,15 @@ st.markdown("""
             font-weight: bold;
             color: #333;
         }
+               
+        .metric-label {
+        font-family: 'Orbitron', sans-serif;
+        font-weight: bold;
+        font-size: 1.5rem
+        color: #333 !important;
+        margin-top: 12px;
+        margin-bottom: 4px;
+      }
     </style>
 """, unsafe_allow_html=True)
 st.markdown("""
