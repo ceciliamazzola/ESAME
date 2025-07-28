@@ -87,6 +87,22 @@ button[data-baseweb="tab"] > div span {
 </style>
 """, unsafe_allow_html=True)
 
+st.markdown("""
+<style>
+/* Testo “1st Pick Only” in nero */
+div[data-testid="stCheckbox"] > label,
+div[data-testid="stCheckbox"] > label > div,
+div[data-testid="stCheckbox"] > label span {
+    color: #000 !important;
+    font-weight: bold !important;
+}
+/* Per sicurezza, anche lo span generato da BaseWeb */
+div[data-testid="stCheckbox"] div[role="checkbox"] + span {
+    color: #000 !important;
+    font-weight: bold !important;
+}
+</style>
+""", unsafe_allow_html=True)
 
 
 # Titolo e sottotitolo
