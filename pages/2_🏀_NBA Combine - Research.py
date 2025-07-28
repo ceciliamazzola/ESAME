@@ -5,6 +5,11 @@ import pandas as pd
 df = pd.read_csv("combine_with_draft_info_fixed.csv", sep=';', engine='python')
 st.set_page_config(page_title="Research - Next Gen Draft", layout="wide")
 
+# Titolo e sottotitolo
+st.markdown("<div class='title-custom'>RESEARCH</div>", unsafe_allow_html=True)
+st.markdown("<div class='subtitle-custom'>Advanced search to identify draft prospects matching ideal profile</div>", unsafe_allow_html=True)
+
+
 # --- CSS personalizzato aggiornato ---
 st.markdown("""
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
@@ -26,7 +31,7 @@ html, body, .stApp {
     font-size: 1.1rem;
     color: #333;
     text-align: center;
-    margin-bottom: 1.5rem;
+    margin-bottom: -1rem;
 }
 .filter-header {
     font-family: 'Orbitron', sans-serif;
@@ -40,33 +45,18 @@ label, .stSelectbox label, .stMultiSelect label, .stSlider label {
     color: #000 !important;
     font-weight: bold;
 }
-/* Checkbox in nero */
-div[data-testid="stCheckbox"] label {
-    color: #000 !important;
-    font-weight: bold !important;
-}
-/* Tabs in nero (attivo e non attivo) */
-div[data-baseweb="tab"] button {
-    color: black !important;
-    font-weight: bold !important;
-}
 /* Bottone Apply Filters visibile sempre */
 .stButton > button {
-    background-color: #f45208 !important;
+    background-color: ##f7f7f7 !important;
     color: white !important;
     font-weight: bold;
     border-radius: 8px;
     font-family: 'Orbitron', sans-serif;
     border: none;
 }
-/* Anche se disabilitato: colore forzato */
-.stButton > button:disabled {
-    background-color: #f45208 !important;
-    color: white !important;
-    opacity: 1 !important;
-}
 </style>
 """, unsafe_allow_html=True)
+
 st.markdown("""
 <style>
 /* TESTO TABS IN NERO */
@@ -105,9 +95,6 @@ div[data-testid="stCheckbox"] div[role="checkbox"] + span {
 """, unsafe_allow_html=True)
 
 
-# Titolo e sottotitolo
-st.markdown("<div class='title-custom'>RESEARCH</div>", unsafe_allow_html=True)
-st.markdown("<div class='subtitle-custom'>Advanced search to identify draft prospects matching ideal profile</div>", unsafe_allow_html=True)
 
 # Bottone back
 st.markdown("""
