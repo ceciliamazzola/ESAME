@@ -5,8 +5,7 @@ import pandas as pd
 df = pd.read_csv("combine_with_draft_info_fixed.csv", sep=';', engine='python')
 st.set_page_config(page_title="Research - Next Gen Draft", layout="wide")
 
-# --- CSS personalizzato ---
-# CSS personalizzato
+# --- CSS personalizzato aggiornato ---
 st.markdown("""
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
 <style>
@@ -41,26 +40,53 @@ label, .stSelectbox label, .stMultiSelect label, .stSlider label {
     color: #000 !important;
     font-weight: bold;
 }
-/* Forza colore nero per tutte le label delle checkbox */
-.stCheckbox div[data-testid="stMarkdownContainer"] > label {
+/* Checkbox in nero */
+div[data-testid="stCheckbox"] label {
     color: #000 !important;
-    font-weight: bold;
+    font-weight: bold !important;
 }
-/* Tabs in nero */
-div[data-baseweb="tab"] > button {
+/* Tabs in nero (attivo e non attivo) */
+div[data-baseweb="tab"] button {
     color: black !important;
-    font-weight: bold;
+    font-weight: bold !important;
 }
-/* Bottone Apply Filters con testo bianco e sfondo arancione */
+/* Bottone Apply Filters visibile sempre */
 .stButton > button {
     background-color: #f45208 !important;
     color: white !important;
     font-weight: bold;
     border-radius: 8px;
     font-family: 'Orbitron', sans-serif;
+    border: none;
+}
+/* Anche se disabilitato: colore forzato */
+.stButton > button:disabled {
+    background-color: #f45208 !important;
+    color: white !important;
+    opacity: 1 !important;
 }
 </style>
 """, unsafe_allow_html=True)
+st.markdown("""
+<style>
+/* TESTO TABS IN NERO */
+button[data-baseweb="tab"] {
+    color: #000 !important;
+}
+/* Anche l’icona SVG dentro la tab */
+button[data-baseweb="tab"] svg {
+    fill: #000 !important;
+}
+/* Assicura che lo span interno (label) sia nero */
+button[data-baseweb="tab"] > div {
+    color: #000 !important;
+}
+button[data-baseweb="tab"] > div span {
+    color: #000 !important;
+}
+</style>
+""", unsafe_allow_html=True)
+
 
 
 # Titolo e sottotitolo
@@ -102,7 +128,6 @@ with tab1:
             st.markdown("<div class='filter-header'>Filter Players</div>", unsafe_allow_html=True)
             st.caption("Set your search criteria and click 'Apply Filters'.")
 
-            # ✅ Bottone Apply Filters con testo bianco
             submitted = st.form_submit_button("Apply Filters")
 
             col1, col2 = st.columns(2)
